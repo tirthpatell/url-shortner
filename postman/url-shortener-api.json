@@ -1,0 +1,566 @@
+{
+  "info": {
+    "name": "URL Shortener API",
+    "description": "A collection for testing the URL Shortener API endpoints. This API allows you to create shortened URLs and retrieve statistics about them.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12345678"
+  },
+  "item": [
+    {
+      "name": "Public Endpoints",
+      "description": "Endpoints that don't require authentication",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/health",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "health"
+              ]
+            },
+            "description": "Check if the API is up and running. This endpoint doesn't require authentication."
+          },
+          "response": [
+            {
+              "name": "Health Check - Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL}}/api/health",
+                  "host": [
+                    "{{BASE_URL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "health"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": \"ok\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Redirect to Original URL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/s/{{SHORT_PATH}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "s",
+                "{{SHORT_PATH}}"
+              ]
+            },
+            "description": "Redirect to the original URL associated with the given short path. This endpoint doesn't require authentication."
+          },
+          "response": [
+            {
+              "name": "Redirect - Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL}}/s/{{SHORT_PATH}}",
+                  "host": [
+                    "{{BASE_URL}}"
+                  ],
+                  "path": [
+                    "s",
+                    "{{SHORT_PATH}}"
+                  ]
+                }
+              },
+              "status": "Moved Permanently",
+              "code": 301,
+              "_postman_previewlanguage": "html",
+              "header": [
+                {
+                  "key": "Location",
+                  "value": "https://example.com/original/url"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Redirect - Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL}}/s/{{SHORT_PATH}}",
+                  "host": [
+                    "{{BASE_URL}}"
+                  ],
+                  "path": [
+                    "s",
+                    "{{SHORT_PATH}}"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Short URL not found\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Protected Endpoints",
+      "description": "Endpoints that require API key authentication",
+      "item": [
+        {
+          "name": "Shorten URL",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{API_KEY}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "X-API-Key",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"url\": \"{{LONG_URL}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/shorten",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "shorten"
+              ]
+            },
+            "description": "Create a shortened URL for a given long URL. This endpoint requires API key authentication."
+          },
+          "response": [
+            {
+              "name": "Shorten URL - Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{API_KEY}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"url\": \"https://example.com/very/long/url/that/needs/shortening\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASE_URL}}/api/shorten",
+                  "host": [
+                    "{{BASE_URL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "shorten"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"short_url\": \"https://sh.domain.com/s/a1b2c3d4\",\n    \"original_url\": \"https://example.com/very/long/url/that/needs/shortening\",\n    \"created_at\": \"2023-11-01T12:00:00Z\"\n}"
+            },
+            {
+              "name": "Shorten URL - Invalid URL",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{API_KEY}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"url\": \"invalid-url\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASE_URL}}/api/shorten",
+                  "host": [
+                    "{{BASE_URL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "shorten"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Invalid URL format\"\n}"
+            },
+            {
+              "name": "Shorten URL - Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"url\": \"https://example.com/very/long/url/that/needs/shortening\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{BASE_URL}}/api/shorten",
+                  "host": [
+                    "{{BASE_URL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "shorten"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Invalid or missing API key\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get URL Statistics",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{API_KEY}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "X-API-Key",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/stats/{{SHORT_PATH}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "stats",
+                "{{SHORT_PATH}}"
+              ]
+            },
+            "description": "Get statistics for a shortened URL. This endpoint requires API key authentication."
+          },
+          "response": [
+            {
+              "name": "Get URL Statistics - Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{API_KEY}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL}}/api/stats/{{SHORT_PATH}}",
+                  "host": [
+                    "{{BASE_URL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "stats",
+                    "{{SHORT_PATH}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": 1,\n    \"original_url\": \"https://example.com/very/long/url/that/needs/shortening\",\n    \"short_path\": \"a1b2c3d4\",\n    \"created_at\": \"2023-11-01T12:00:00Z\",\n    \"last_accessed\": \"2023-11-02T15:30:45Z\",\n    \"access_count\": 42\n}"
+            },
+            {
+              "name": "Get URL Statistics - Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{API_KEY}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL}}/api/stats/{{SHORT_PATH}}",
+                  "host": [
+                    "{{BASE_URL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "stats",
+                    "{{SHORT_PATH}}"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Short URL not found\"\n}"
+            },
+            {
+              "name": "Get URL Statistics - Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL}}/api/stats/{{SHORT_PATH}}",
+                  "host": [
+                    "{{BASE_URL}}"
+                  ],
+                  "path": [
+                    "api",
+                    "stats",
+                    "{{SHORT_PATH}}"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": \"Invalid or missing API key\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Shorten URL (Bearer Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{API_KEY}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"url\": \"{{LONG_URL}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/shorten",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "shorten"
+              ]
+            },
+            "description": "Create a shortened URL using Bearer token authentication instead of X-API-Key header."
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "apikey",
+        "apikey": [
+          {
+            "key": "value",
+            "value": "{{API_KEY}}",
+            "type": "string"
+          },
+          {
+            "key": "key",
+            "value": "X-API-Key",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:8080",
+      "type": "string",
+      "description": "The base URL of the API"
+    },
+    {
+      "key": "API_KEY",
+      "value": "your_secure_api_key_here",
+      "type": "string",
+      "description": "Your API key for authentication"
+    },
+    {
+      "key": "SHORT_PATH",
+      "value": "a1b2c3d4",
+      "type": "string",
+      "description": "An example short path"
+    },
+    {
+      "key": "LONG_URL",
+      "value": "https://example.com/very/long/url/that/needs/shortening",
+      "type": "string",
+      "description": "An example long URL to be shortened"
+    }
+  ]
+} 
